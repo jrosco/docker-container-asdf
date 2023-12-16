@@ -1,0 +1,86 @@
+#!/bin/bash
+set -euo pipefail
+
+# Function to set asdf package versions
+asdf_toolset_version() {
+    local asdf_cli="$1"
+    local install_type="${2:-local}"
+    shift 2
+    local packages=("$@")
+
+    for package in "${packages[@]}"; do
+        if [[ $package == *":"* ]]; then
+            IFS=':' read -r package_name package_version <<< "$package"
+        else
+            package_name=$package
+            package_version=""
+        fi
+
+        "$asdf_cli" plugin add "$package_name"
+
+        if [ -z "$package_version" ]; then
+            continue
+        fi
+
+        echo "Setting $install_type toolset $package_name:$package_version"
+        if ! "$asdf_cli" "$install_type" "$package_name" "$package_version"; then
+            echo "Could not set $package_name to version $package_version. Installing ..." >&2
+            if "$asdf_cli" install "$package_name" "$package_version" && \
+               "$asdf_cli" "$install_type" "$package_name" "$package_version"; then
+                echo "Installed $package_name version $package_version successfully"
+            else
+                echo "Failed to install $package_name to version $package_version" >&2
+            fi
+        fi
+    done
+}
+
+usage() {
+    echo "Usage: $0 -t [local|global] -p package:version [package2:version ...] [-l] [-h]" >&2
+    echo "Options:" >&2
+    echo "  -t    Specify install type (local/global)" >&2
+    echo "  -p    Specify package:version pair (can be repeated for multiple packages)" >&2
+    echo "  -l    List installed asdf packages" >&2
+    echo "  -h    Display this help message" >&2
+    exit 1
+}
+
+# Check if array option is provided
+if [ $# -eq 0 ]; then
+    usage
+fi
+
+# Check if asdf is installed and accessible
+if ! asdf_cli=$(command -v asdf); then
+    echo "asdf-vm is not installed or not found in the PATH. Please install asdf-vm." >&2
+    exit 1
+fi
+
+install_type="local"
+input_array=()
+
+# Parse options using getopts
+while getopts ":lht:p:" opt; do
+    case $opt in
+        t)
+            install_type="$OPTARG"
+            ;;
+        p)
+            input_array+=("$OPTARG")
+            ;;
+        l)
+            "$asdf_cli" list
+            ;;
+        h)
+            usage
+            ;;
+        *)
+            echo "Invalid option: -$OPTARG" >&2
+            usage
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+asdf_toolset_version "$asdf_cli" "$install_type" "${input_array[@]}"

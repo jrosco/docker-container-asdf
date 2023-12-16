@@ -1,0 +1,7 @@
+*.*
+files/
+toolset-docker-images/
+Dockerfile*
+Makefile*
+README.md
+*.out

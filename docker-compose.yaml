@@ -1,0 +1,67 @@
+# https://docs.docker.com/compose/compose-file/build/
+services:
+  alpine:
+    image: ${ALPINE_IMAGE_REPO_PATH}:latest
+    build:
+      context: .
+      dockerfile: base-images/Dockerfile.alpine
+      args:
+        alpine_image: alpine:${ALPINE_VERSION}
+      platforms:
+        - "linux/amd64"
+      tags:
+        - "${ALPINE_IMAGE_REPO_PATH}:${ALPINE_TAG_PREFIX}${GIT_TAG}"
+        - "${ALPINE_IMAGE_REPO_PATH}:${ALPINE_TAG_PREFIX}${ALPINE_VERSION}"
+        - "${ALPINE_IMAGE_REPO_PATH}:${ALPINE_TAG_PREFIX}${ALPINE_MAJOR_VERSION}"
+        - "${ALPINE_IMAGE_REPO_PATH}:${ALPINE_TAG_PREFIX}${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}"
+        - "${ALPINE_IMAGE_REPO_PATH}:${ALPINE_VERSION_SHORTHAND}"
+      labels:
+        - org.opencontainers.image.authors=${MAINTAINER}
+        - org.opencontainers.image.title=${NAME}/alpine
+        - org.opencontainers.image.description=${DESCRIPTION}
+        - org.opencontainers.image.url=${URL}
+        - org.opencontainers.image.source=${REPOSITORY}
+
+  ubuntu:
+    image: ${UBUNTU_IMAGE_REPO_PATH}:latest
+    build:
+      context: .
+      dockerfile: base-images/Dockerfile.ubuntu
+      args:
+        ubuntu_image: ubuntu:${UBUNTU_VERSION}
+      platforms:
+        - "linux/amd64"
+      tags:
+        - "${UBUNTU_IMAGE_REPO_PATH}:${UBUNTU_TAG_PREFIX}${GIT_TAG}"
+        - "${UBUNTU_IMAGE_REPO_PATH}:${UBUNTU_TAG_PREFIX}${UBUNTU_VERSION}"
+        - "${UBUNTU_IMAGE_REPO_PATH}:${UBUNTU_TAG_PREFIX}${UBUNTU_MAJOR_VERSION}"
+        - "${UBUNTU_IMAGE_REPO_PATH}:${UBUNTU_TAG_PREFIX}${UBUNTU_MAJOR_VERSION}.${UBUNTU_MINOR_VERSION}"
+        - "${UBUNTU_IMAGE_REPO_PATH}:${UBUNTU_VERSION_SHORTHAND}"
+      labels:
+        - org.opencontainers.image.authors=${MAINTAINER}
+        - org.opencontainers.image.title=${NAME}/ubuntu
+        - org.opencontainers.image.description=${DESCRIPTION}
+        - org.opencontainers.image.url=${URL}
+        - org.opencontainers.image.source=${REPOSITORY}
+
+  redhat:
+    image: ${REDHAT_IMAGE_REPO_PATH}:latest
+    build:
+      context: .
+      dockerfile: base-images/Dockerfile.redhat
+      args:
+        redhat_image: redhat/ubi8:${REDHAT_VERSION}
+      platforms:
+        - "linux/amd64"
+      tags:
+        - "${REDHAT_IMAGE_REPO_PATH}:${REDHAT_TAG_PREFIX}${GIT_TAG}"
+        - "${REDHAT_IMAGE_REPO_PATH}:${REDHAT_TAG_PREFIX}${REDHAT_VERSION}"
+        - "${REDHAT_IMAGE_REPO_PATH}:${REDHAT_TAG_PREFIX}${REDHAT_MAJOR_VERSION}"
+        - "${REDHAT_IMAGE_REPO_PATH}:${REDHAT_TAG_PREFIX}${REDHAT_MAJOR_VERSION}.${REDHAT_MINOR_VERSION}"
+        - "${REDHAT_IMAGE_REPO_PATH}:${REDHAT_VERSION_SHORTHAND}"
+      labels:
+        - org.opencontainers.image.authors=${MAINTAINER}
+        - org.opencontainers.image.title=${NAME}/redhat
+        - org.opencontainers.image.description=${DESCRIPTION}
+        - org.opencontainers.image.url=${URL}
+        - org.opencontainers.image.source=${REPOSITORY}

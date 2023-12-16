@@ -1,0 +1,29 @@
+ARG ubuntu_image="ubuntu:latest"
+FROM $ubuntu_image
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    git curl bash unzip ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Refresh the CA certificates
+RUN update-ca-certificates
+
+RUN adduser --shell /bin/bash --home /asdf --disabled-password asdf
+ENV PATH="${PATH}:/asdf/.asdf/shims:/asdf/.asdf/bin"
+
+USER asdf
+WORKDIR /asdf
+
+COPY ../bin/install-asdf-package /init/
+COPY ../bin/manage-toolset-versions /usr/local/bin/
+
+ONBUILD ARG asdf_version="master"
+ONBUILD ARG packages=""
+ONBUILD ENV ASDF_PACKAGES=$packages
+
+ONBUILD USER asdf
+ONBUILD RUN git clone --branch $asdf_version --depth 1 https://github.com/asdf-vm/asdf.git $HOME/.asdf && \
+    echo '. $HOME/.asdf/asdf.sh' >> $HOME/.bashrc && \
+    bash /init/install-asdf-package
