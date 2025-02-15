@@ -1,18 +1,28 @@
-# `asdf-vm` images for Docker
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jrosco/docker-container-asdf/docker-build.yaml?style=for-the-badge)![GitHub Tag](https://img.shields.io/github/v/tag/jrosco/docker-container-asdf?style=for-the-badge)![GitHub last commit](https://img.shields.io/github/last-commit/jrosco/docker-container-asdf?display_timestamp=author&style=for-the-badge)![GitHub forks](https://img.shields.io/github/forks/jrosco/docker-container-asdf?style=for-the-badge)![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/jrosco/docker-container-asdf?style=for-the-badge)![GitHub License](https://img.shields.io/github/license/jrosco/docker-container-asdf?style=for-the-badge)
 
-This repository contains base Docker images tailored for the versatile version manager tool, `asdf-vm`. These base images are designed with a flexible `ONBUILD` feature, enabling the creation of specialized images pre-equipped with predefined asdf plugins.
+### Current versions
+![Go](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/update_asdf_new_golang_version_0.16.0/docs/badges/golang.json)
+![Alpine](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/update_asdf_new_golang_version_0.16.0/docs/badges/alpine.json)
+![Debian](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/update_asdf_new_golang_version_0.16.0/docs/badges/debian.json)
+![ASDF](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/update_asdf_new_golang_version_0.16.0/docs/badges/asdf.json)
+
+# `asdf-vm` base images
+
+Works with [asdf] `>=0.16.0`
+
+This repository contains base Docker images tailored for the versatile version manager tool, `asdf-vm`. These base images are designed with a flexible `ONBUILD` feature, enabling the creation of specialized images pre-equipped with predefined [asdf] plugins.
 
 ## Overview
 
 ### Base Image Structure
 
-The base image Dockerfile provided here serves as a fundamental building block. It includes essential configurations to set up `asdf-vm` along with necessary tools like Git, curl, and bash within an Alpine Linux environment. An `ONBUILD` directive is employed to facilitate the automatic installation of specified asdf plugins and versions when building new images based on this template.
+The base image Dockerfile provided here serves as a fundamental building block. It includes essential configurations to set up `asdf-vm` along with necessary tools like Git, curl, and bash within an Linux environment. An `ONBUILD` directive is employed to facilitate the automatic installation of specified [asdf] plugins and versions when building new images based on this template.
 
 ### Utilising ToolSet Images
 
 Examples of other Dockerfiles demonstrate how these base images can be utilized to construct specialized images for different tools or software stacks. By leveraging the base image and utilizing a docker-compose file, users can easily set up and install asdf plugins as per their requirements.
 
-To make this your own repository, you can [fork](https://github.com/jrosco/docker-container-asdf/fork) this repo and update the following [environment](config/environment) variables to your liking.
+To make this your own repository, you can [fork](https://github.com/jrosco/docker-container-asdf/fork) this repo and update the following [environment] variables to your liking.
 
 ```bash
 # labels
@@ -24,7 +34,7 @@ REPOSITORY=$URL
 
 # docker registries
 ASDF_REGISTRY_BASE="ghcr.io/jrosco/$NAME"
-ASDF_REGISTRY_TOOLSET="$ASDF_REGISTRY_BASE"
+ASDF_REGISTRY_TOOLSET="$ASDF_REGISTRY_BASE-toolsets"
 ```
 
 An example is showcased using Helm packages within an Alpine Linux environment and other examples found in the [toolset-docker-images] directory.
@@ -34,14 +44,13 @@ docker-compose.yml:
 ```yaml
 services:
   alpine:
-    image: ghcr.io/jrosco/asdf-vm-toolset/helm:alpine
+        image: ghcr.io/jrosco/asdf-vm-toolsets/helm:alpine
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        image: "ghcr.io/jrosco/asdf-vm:alpine"
+        asdf_image: "ghcr.io/jrosco/asdf-vm:alpine"
         packages: "helm helmfile helm-diff"
-        asdf_version: "v0.13.1"
       platforms:
         - "linux/amd64"
 ```
@@ -55,22 +64,25 @@ FROM ghcr.io/jrosco/asdf-vm:alpine
 #### Build the image
 
 ```bash
-docker build --build-arg packages="helmfile:latest:set helm:latest:set" -t helm:alpine .
+docker build \
+    --build-arg \
+    packages="awscli:latest:set helmfile:latest:set helm:latest:set kustomize:latest:set" \
+    -t helm-toolset:alpine .
 ```
 
-#### Get the helm version
+#### Get the installed package versions and details
 
 ```bash
-docker run -it helm:alpine helm version
+docker run -it helm-toolset:alpine asdf info
+docker run -it helm-toolset:alpine asdf current
 ```
 
 ### Docker Build Arguments `--build-arg`
 
 Each Dockerfile utilizes the following build arguments:
 
-- `image`: The base image to use for the build. This should be one of the base images provided in the [base-images] directory.
-- `packages`: A list of asdf plugins to install. These should be space-separated and match the names of the plugins in the [asdf-community GitHub repository](https://github.com/asdf-community)
-- `asdf_version`: The version of asdf to install. This should be a valid tag from the [asdf GitHub repository](https://github.com/asdf-vm/asdf).
+- `asdf_image`: The base image to use for the build. This should be one of the base images provided in the [base-images] directory.
+- `packages`: A list of [asdf] plugins to install. These should be space-separated and match the names of the plugins in the [asdf-community GitHub repository](https://github.com/asdf-community)
 
 `packages` support the following formats
 
@@ -81,7 +93,7 @@ Each Dockerfile utilizes the following build arguments:
 | `helm:3.10.3:set` | Install plugin (if not present) and download helm version `3.10.3` and set this as the default version in `.tool-versions`    |
 | `helm:latest`     | Install plugin (if not present) and download latest version of `helm`                                                         |
 
-The `image` , `packages` and `asdf_version` arguments are optional. If not provided, the build will default to installing the latest version of asdf and no plugins.
+The `asdf_image`  and `packages` arguments are optional. If not provided, the build will default to installing the latest version of asdf and no plugins.
 
 ## Getting Started
 
@@ -99,9 +111,11 @@ Contributions to enhance or expand the existing base images or examples are welc
 
 ## License
 
-This project is licensed under the MIT License.
+GNU General Public License v3.0 or later
 
-Feel free to adjust this README according to your specific repository details, adding more sections or details as necessary. This description aims to provide a clear overview, instructions for usage, and guidance for contributions in a concise and user-friendly manner.
+See [COPYING](COPYING) to see the full text.
 
-[base-images]: /base-images/
-[toolset-docker-images]: /toolset-docker-images/
+[asdf]: https://asdf-vm.com/
+[base-images]: https://github.com/jrosco/docker-container-asdf/tree/main/base-images
+[toolset-docker-images]: https://github.com/jrosco/docker-container-asdf/tree/main/toolset-docker-images
+[environment]: https://github.com/jrosco/docker-container-asdf/blob/main/config/environment

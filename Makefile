@@ -15,30 +15,30 @@ all: build push
 toolsets: build-toolsets push-toolsets
 
 build:
-	@docker-compose build
+	@docker compose build
 
 push:
-	@docker-compose --parallel $(PARALLELISM) build --push
+	@docker compose --parallel $(PARALLELISM) build --push
 
 clean:
-	@docker-compose down --rmi all
+	@docker compose down --rmi all
 
 build-toolsets: ln-env-toolsets
 	@for target in $(TOOLSET_BUILD_TARGETS); do \
 		echo "Building $$target"; \
-		docker-compose -f ./toolset-docker-images/$$target/docker-compose.yaml build || { echo "Error building $$target"; exit 1; }; \
+		docker compose -f ./toolset-docker-images/$$target/docker-compose.yaml build || { echo "Error building $$target"; exit 1; }; \
 	done
 
 push-toolsets:
 	@for target in $(TOOLSET_BUILD_TARGETS); do \
 		echo "Pushing $(TOOLSET_IMAGE_REPO):$$target"; \
-		docker-compose --parallel $(PARALLELISM) -f ./toolset-docker-images/$$target/docker-compose.yaml build --push || { echo "Error pushing $$target"; exit 1; }; \
+		docker compose --parallel $(PARALLELISM) -f ./toolset-docker-images/$$target/docker-compose.yaml build --push || { echo "Error pushing $$target"; exit 1; }; \
 	done
 
 clean-toolsets:
 	@for target in $(TOOLSET_BUILD_TARGETS); do \
 		echo "Remove $(TOOLSET_IMAGE_REPO):$$target"; \
-		docker-compose down --rmi all || { echo "Error pushing $$target"; exit 1; }; \
+		docker compose down --rmi all || { echo "Error pushing $$target"; exit 1; }; \
 	done
 
 ln-env-toolsets:

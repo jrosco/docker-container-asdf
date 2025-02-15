@@ -1,0 +1,62 @@
+name: Docker Compose Action [merge]
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - '.gitignore'
+      - '.github/workflows/*'
+
+jobs:
+  tag-semver-release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: '0'
+      - name: Bump version and push tag
+        # docs: https://github.com/anothrNick/github-tag-action
+        # Any commit message that includes #major, #minor, #patch, or #none will trigger the respective version bump.
+        # If no #major, #minor or #patch tag is contained in the merge commit message, it will bump whichever DEFAULT_BUMP
+        # is set to (which is minor by default) 
+        uses: anothrNick/github-tag-action@v1
+        id: semver
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          PRERELEASE: false
+          DEFAULT_BUMP: minor
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: [tag-semver-release]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker build images and tags
+        run: |
+          BUILD_NUMBER=${{ jobs.semver.output.new_tag }} \
+          docker \
+            compose build
+      - name: Docker lists builds
+        run: docker images
+      - name: Docker push-image
+        run: |
+          retry() {
+            for i in {1..5}; do
+              BUILD_NUMBER=${{ jobs.semver.new_tag }} \
+              docker compose push && break || sleep 15
+            done
+          }
+          retry
+

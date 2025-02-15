@@ -1,67 +1,104 @@
 # https://docs.docker.com/compose/compose-file/build/
 services:
   alpine:
-    image: ${ALPINE_IMAGE_REPO_PATH}:latest
+    image: ${ALPINE_IMAGE_REPO_PATH}
     build:
       context: .
       dockerfile: base-images/Dockerfile.alpine
       args:
-        alpine_image: alpine:${ALPINE_VERSION}
+        asdf_version: "${ASDF_VERSION}"
+        go_build_version: "golang:${GOLANG_VERSION}-alpine${ALPINE_VERSION_SHORTHAND}" 
+        alpine_image: "alpine:${ALPINE_VERSION}"
       platforms:
         - "linux/amd64"
+        # - "linux/arm64"
       tags:
-        - "${ALPINE_IMAGE_REPO_PATH}:${ALPINE_TAG_PREFIX}${GIT_TAG}"
-        - "${ALPINE_IMAGE_REPO_PATH}:${ALPINE_TAG_PREFIX}${ALPINE_VERSION}"
-        - "${ALPINE_IMAGE_REPO_PATH}:${ALPINE_TAG_PREFIX}${ALPINE_MAJOR_VERSION}"
-        - "${ALPINE_IMAGE_REPO_PATH}:${ALPINE_TAG_PREFIX}${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}"
-        - "${ALPINE_IMAGE_REPO_PATH}:${ALPINE_VERSION_SHORTHAND}"
+        - "${ASDF_REGISTRY_BASE}:latest" # set alpine as default latest images
+        - "${ALPINE_IMAGE_REPO_PATH}-${ASDF_VERSION}" # set as default asdf images
+        - "${ALPINE_IMAGE_REPO_PATH}-build${BUILD_NUMBER}"
+        - "${ALPINE_IMAGE_REPO_PATH}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${ALPINE_IMAGE_REPO_PATH}-${ALPINE_VERSION}-${ASDF_VERSION}"
+        - "${ALPINE_IMAGE_REPO_PATH}-${ALPINE_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${ALPINE_IMAGE_REPO_PATH}${ALPINE_MAJOR_VERSION}"
+        - "${ALPINE_IMAGE_REPO_PATH}${ALPINE_MAJOR_VERSION}-build${BUILD_NUMBER}"
+        - "${ALPINE_IMAGE_REPO_PATH}${ALPINE_MAJOR_VERSION}-${ASDF_VERSION}"
+        - "${ALPINE_IMAGE_REPO_PATH}${ALPINE_MAJOR_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${ALPINE_IMAGE_REPO_PATH}-${ALPINE_VERSION_SHORTHAND}-${ASDF_VERSION}"
+        - "${ALPINE_IMAGE_REPO_PATH}-${ALPINE_VERSION_SHORTHAND}-${ASDF_VERSION}-build${BUILD_NUMBER}"
       labels:
+        - org.opencontainers.image.base.name=${ALPINE_IMAGE_REPO_PATH}
         - org.opencontainers.image.authors=${MAINTAINER}
         - org.opencontainers.image.title=${NAME}/alpine
         - org.opencontainers.image.description=${DESCRIPTION}
         - org.opencontainers.image.url=${URL}
         - org.opencontainers.image.source=${REPOSITORY}
+        - org.opencontainers.image.version=${BUILD_NUMBER}
 
-  ubuntu:
-    image: ${UBUNTU_IMAGE_REPO_PATH}:latest
+  debian:
+    image: ${DEBIAN_IMAGE_REPO_PATH}
     build:
       context: .
-      dockerfile: base-images/Dockerfile.ubuntu
+      dockerfile: base-images/Dockerfile.debian
       args:
-        ubuntu_image: ubuntu:${UBUNTU_VERSION}
+        asdf_version: $ASDF_VERSION
+        go_build_version: "golang:${GOLANG_VERSION}-${DEBIAN_VERSION_CODENAME}" 
+        debian_image: debian:${DEBIAN_VERSION}
       platforms:
         - "linux/amd64"
+        # - "linux/arm64"
       tags:
-        - "${UBUNTU_IMAGE_REPO_PATH}:${UBUNTU_TAG_PREFIX}${GIT_TAG}"
-        - "${UBUNTU_IMAGE_REPO_PATH}:${UBUNTU_TAG_PREFIX}${UBUNTU_VERSION}"
-        - "${UBUNTU_IMAGE_REPO_PATH}:${UBUNTU_TAG_PREFIX}${UBUNTU_MAJOR_VERSION}"
-        - "${UBUNTU_IMAGE_REPO_PATH}:${UBUNTU_TAG_PREFIX}${UBUNTU_MAJOR_VERSION}.${UBUNTU_MINOR_VERSION}"
-        - "${UBUNTU_IMAGE_REPO_PATH}:${UBUNTU_VERSION_SHORTHAND}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-build${BUILD_NUMBER}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION_CODENAME}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION_CODENAME}-build${BUILD_NUMBER}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${ASDF_VERSION}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION}-${ASDF_VERSION}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION_CODENAME}-${DEBIAN_VERSION}-${ASDF_VERSION}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION_CODENAME}-${DEBIAN_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${DEBIAN_IMAGE_REPO_PATH}${DEBIAN_MAJOR_VERSION}"
+        - "${DEBIAN_IMAGE_REPO_PATH}${DEBIAN_MAJOR_VERSION}-build${BUILD_NUMBER}"
+        - "${DEBIAN_IMAGE_REPO_PATH}${DEBIAN_MAJOR_VERSION}-${ASDF_VERSION}"
+        - "${DEBIAN_IMAGE_REPO_PATH}${DEBIAN_MAJOR_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${DEBIAN_IMAGE_REPO_PATH}${DEBIAN_MAJOR_VERSION}-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}"
+        - "${DEBIAN_IMAGE_REPO_PATH}${DEBIAN_MAJOR_VERSION}-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION}-${ASDF_VERSION}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION_CODENAME}-${DEBIAN_VERSION}-${ASDF_VERSION}" 
+        - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION_CODENAME}-${DEBIAN_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}" 
       labels:
+        - org.opencontainers.image.base.name=${DEBIAN_IMAGE_REPO_PATH}
         - org.opencontainers.image.authors=${MAINTAINER}
-        - org.opencontainers.image.title=${NAME}/ubuntu
+        - org.opencontainers.image.title=${NAME}/debian
         - org.opencontainers.image.description=${DESCRIPTION}
         - org.opencontainers.image.url=${URL}
         - org.opencontainers.image.source=${REPOSITORY}
+        - org.opencontainers.image.version=${BUILD_NUMBER}
 
-  redhat:
-    image: ${REDHAT_IMAGE_REPO_PATH}:latest
-    build:
-      context: .
-      dockerfile: base-images/Dockerfile.redhat
-      args:
-        redhat_image: redhat/ubi8:${REDHAT_VERSION}
-      platforms:
-        - "linux/amd64"
-      tags:
-        - "${REDHAT_IMAGE_REPO_PATH}:${REDHAT_TAG_PREFIX}${GIT_TAG}"
-        - "${REDHAT_IMAGE_REPO_PATH}:${REDHAT_TAG_PREFIX}${REDHAT_VERSION}"
-        - "${REDHAT_IMAGE_REPO_PATH}:${REDHAT_TAG_PREFIX}${REDHAT_MAJOR_VERSION}"
-        - "${REDHAT_IMAGE_REPO_PATH}:${REDHAT_TAG_PREFIX}${REDHAT_MAJOR_VERSION}.${REDHAT_MINOR_VERSION}"
-        - "${REDHAT_IMAGE_REPO_PATH}:${REDHAT_VERSION_SHORTHAND}"
-      labels:
-        - org.opencontainers.image.authors=${MAINTAINER}
-        - org.opencontainers.image.title=${NAME}/redhat
-        - org.opencontainers.image.description=${DESCRIPTION}
-        - org.opencontainers.image.url=${URL}
-        - org.opencontainers.image.source=${REPOSITORY}
+
+  # disabled redhat as it does not support golang 1.24.4 required for asdf 
+  # when ready to enable see
+  # https://catalog.redhat.com/software/containers/ubi8/go-toolset/5ce8713aac3db925c03774d1?gs&q=go%20tool 
+  # redhat:
+  #   image: ${REDHAT_IMAGE_REPO_PATH}
+  #   build:
+  #     context: .
+  #     dockerfile: base-images/Dockerfile.redhat
+  #     args:
+  #       redhat_image: redhat/ubi8:${REDHAT_VERSION}
+  #     platforms:
+  #       - "linux/amd64"
+  #     tags:
+  #       - "${REDHAT_IMAGE_REPO_PATH}-${REDHAT_TAG_PREFIX}${GIT_TAG}"
+  #       - "${REDHAT_IMAGE_REPO_PATH}-${REDHAT_TAG_PREFIX}${REDHAT_VERSION}"
+  #       - "${REDHAT_IMAGE_REPO_PATH}-${REDHAT_TAG_PREFIX}${REDHAT_MAJOR_VERSION}"
+  #       - "${REDHAT_IMAGE_REPO_PATH}-${REDHAT_TAG_PREFIX}${REDHAT_MAJOR_VERSION}.${REDHAT_MINOR_VERSION}"
+  #       - "${REDHAT_IMAGE_REPO_PATH}-${REDHAT_VERSION_SHORTHAND}"
+  #     labels:
+  #       - org.opencontainers.image.authors=${MAINTAINER}
+  #       - org.opencontainers.image.title=${NAME}/redhat
+  #       - org.opencontainers.image.description=${DESCRIPTION}
+  #       - org.opencontainers.image.url=${URL}
+  #       - org.opencontainers.image.source=${REPOSITORY}

@@ -23,7 +23,7 @@ if ! asdf_cli=$(command -v asdf); then
 fi
 
 # Convert the space-separated string into an array using IFS (Internal Field Separator)
-IFS=' ' read -r -a PACKAGES <<< "$ASDF_PACKAGES"
+IFS=' ' read -r -a PACKAGES <<<"$ASDF_PACKAGES"
 
 # Function to install a package with a specific version or the latest if not provided
 install_package() {
@@ -32,7 +32,7 @@ install_package() {
     local default_package=${3:-}
 
     if [ ! -d "$HOME/.asdf/plugins/$package_name" ]; then
-        "$asdf_cli" plugin-add "$package_name"
+        "$asdf_cli" plugin add "$package_name"
     fi
 
     if [ -n "$package_version" ]; then
@@ -52,7 +52,7 @@ install_package() {
         fi
 
         if [ "$default_package" == "set" ]; then
-            "$asdf_cli" global "$package_name" "$package_version"
+            "$asdf_cli" set "$package_name" "$package_version"
         fi
     fi
 }
@@ -60,7 +60,7 @@ install_package() {
 # Loop through each plugin in the PACKAGES array
 for package in "${PACKAGES[@]}"; do
     if [[ $package == *":"* ]]; then
-        IFS=':' read -r package_name package_version default_package <<< "$package"
+        IFS=':' read -r package_name package_version default_package <<<"$package"
     else
         package_name=$package
         package_version=""
