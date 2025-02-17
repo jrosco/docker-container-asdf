@@ -7,7 +7,7 @@ on:
       - '*.md'
       - 'docs/**'
       - '.gitignore'
-      - '.github/workflows/*'
+      - '.github/**'
 jobs:
   test-alpine-dev:
     runs-on: ubuntu-latest
