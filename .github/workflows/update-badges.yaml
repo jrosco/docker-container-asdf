@@ -1,4 +1,4 @@
-name: Update Badges [cronjob]
+name: Update Badges [bot_task]
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
       - name: Run Badge Script
         run: |
           mkdir -p docs/badges
-          python bin/generate_badges.py
+          python .github/scripts/generate_badges.py
 
       - name: Commit and Push Badges
         run: |
