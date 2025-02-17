@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-02-17
+### Changed
+- :pushpin: Update `asdf` to version `0.16.1`
+
 ## [0.1.0] - 2025-02-17
 ### Added
 - ⚙️ Improved GitHub Actions workflows:
@@ -39,3 +43,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [Unreleased]: https://github.com/jrosco/docker-container-asdf/compare/main...HEAD
 [0.0.0]: https://github.com/jrosco/docker-container-asdf/compare/0.0.0...HEAD
 [0.1.0]: https://github.com/jrosco/docker-container-asdf/compare/0.0.0...0.1.0
+[0.2.0]: https://github.com/jrosco/docker-container-asdf/compare/0.1.0...0.2.0
