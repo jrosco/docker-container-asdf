@@ -4,13 +4,14 @@ set -euo pipefail
 # Function to set asdf package versions
 asdf_toolset_version() {
     local asdf_cli="$1"
-    local install_type="${2:-local}"
+    local install_type="${2:-home}"
     shift 2
     local packages=("$@")
+    local install_type_arg=""
 
     for package in "${packages[@]}"; do
         if [[ $package == *":"* ]]; then
-            IFS=':' read -r package_name package_version <<< "$package"
+            IFS=':' read -r package_name package_version <<<"$package"
         else
             package_name=$package
             package_version=""
@@ -22,23 +23,26 @@ asdf_toolset_version() {
             continue
         fi
 
+        if [ "$install_type" == "home" ]; then
+            install_type_arg="-u"
+        else
+            install_type_arg="-p"
+        fi
+
         echo "Setting $install_type toolset $package_name:$package_version"
-        if ! "$asdf_cli" "$install_type" "$package_name" "$package_version"; then
-            echo "Could not set $package_name to version $package_version. Installing ..." >&2
-            if "$asdf_cli" install "$package_name" "$package_version" && \
-               "$asdf_cli" "$install_type" "$package_name" "$package_version"; then
-                echo "Installed $package_name version $package_version successfully"
-            else
-                echo "Failed to install $package_name to version $package_version" >&2
-            fi
+        if "$asdf_cli" install "$package_name" "$package_version"; then
+            echo "Installed $package_name version $package_version successfully"
+            "$asdf_cli" set "$install_type_arg" "$package_name" "$package_version"
+        else
+            echo "Failed to install $package_name to version $package_version" >&2
         fi
     done
 }
 
 usage() {
-    echo "Usage: $0 -t [local|global] -p package:version [package2:version ...] [-l] [-h]" >&2
+    echo "Usage: $0 -t [home|parent] -p package:version [package2:version ...] [-l] [-h]" >&2
     echo "Options:" >&2
-    echo "  -t    Specify install type (local/global)" >&2
+    echo "  -t    Specify install type (home/parent)" >&2
     echo "  -p    Specify package:version pair (can be repeated for multiple packages)" >&2
     echo "  -l    List installed asdf packages" >&2
     echo "  -h    Display this help message" >&2
@@ -56,28 +60,28 @@ if ! asdf_cli=$(command -v asdf); then
     exit 1
 fi
 
-install_type="local"
+install_type="home"
 input_array=()
 
 # Parse options using getopts
 while getopts ":lht:p:" opt; do
     case $opt in
-        t)
-            install_type="$OPTARG"
-            ;;
-        p)
-            input_array+=("$OPTARG")
-            ;;
-        l)
-            "$asdf_cli" list
-            ;;
-        h)
-            usage
-            ;;
-        *)
-            echo "Invalid option: -$OPTARG" >&2
-            usage
-            ;;
+    t)
+        install_type="$OPTARG"
+        ;;
+    p)
+        input_array+=("$OPTARG")
+        ;;
+    l)
+        "$asdf_cli" list
+        ;;
+    h)
+        usage
+        ;;
+    *)
+        echo "Invalid option: -$OPTARG" >&2
+        usage
+        ;;
     esac
 done
 

@@ -1,0 +1,86 @@
+name: Docker Compose Action [pull_request]
+on:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - '.gitignore'
+      - '.github/workflows/*'
+jobs:
+  test-alpine-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Alpine install packages
+        run: |
+          docker compose run \
+            --build \
+            --env ASDF_PACKAGES="helm:latest helmfile:latest" \
+            alpine bash /init/install-asdf-package
+  test-debian-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Debian install packages
+        run: |
+          docker compose run \
+            --build \
+            --env ASDF_PACKAGES="helm:latest helmfile:latest" \
+            debian bash /init/install-asdf-package
+  check-next-version-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: '0'
+      - name: Check bump version
+        # docs: https://github.com/anothrNick/github-tag-action
+        # Any commit message that includes #major, #minor, #patch, or #none will trigger the respective version bump.
+        # If no #major, #minor or #patch tag is contained in the merge commit message, it will bump whichever DEFAULT_BUMP
+        # is set to (which is minor by default)
+        uses: anothrNick/github-tag-action@v1
+        id: check-semver
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          PRERELEASE: false
+          DRY_RUN: true
+          DEFAULT_BUMP: minor
+      - name: Check tag can be set
+        if: ${{ steps.check-semver.outputs.tag == '' }}
+        uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('tag ${{ steps.check-semver.output.new_tag }} cannot be set! please add #major #minor or #patch to the commit message')
+  build-and-push-to-dev:
+    runs-on: ubuntu-latest
+    needs: [test-alpine-dev, test-debian-dev, check-next-version-bump]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker build images and tags
+        run: |
+          ASDF_REGISTRY_SUFFIX="-dev" \
+          BUILD_NUMBER=${{ github.event.pull_request.number }} \
+          docker \
+            compose build
+      - name: Docker lists builds
+        run: docker images
+      - name: Docker push-image
+        run: |
+          retry() {
+            for i in {2..5}; do
+              ASDF_REGISTRY_SUFFIX="-dev" \
+              BUILD_NUMBER=${{ github.event.pull_request.number }} \
+              docker compose push && break || sleep 16
+            done
+          }
+          retry

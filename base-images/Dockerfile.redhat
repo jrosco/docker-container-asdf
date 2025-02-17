@@ -1,24 +1,27 @@
-ARG redhat_image="redhat/ubi8:latest"
-FROM $redhat_image
-
-RUN yum update -y && \
-    yum install -y git curl bash unzip && \
-    yum clean all
-
-RUN useradd --shell /bin/bash --home /asdf --create-home asdf
-ENV PATH="${PATH}:/asdf/.asdf/shims:/asdf/.asdf/bin"
-
-USER asdf
-WORKDIR /asdf
-
-COPY ../bin/install-asdf-package /init/
-COPY ../bin/manage-toolset-versions /usr/local/bin/
-
-ONBUILD ARG asdf_version="master"
-ONBUILD ARG packages=""
-ONBUILD ENV ASDF_PACKAGES=$packages
-
-ONBUILD USER asdf
-ONBUILD RUN git clone --branch $asdf_version --depth 1 https://github.com/asdf-vm/asdf.git $HOME/.asdf && \
-    echo '. $HOME/.asdf/asdf.sh' >> $HOME/.bashrc && \
-    bash /init/install-asdf-package
+# disabled redhat as it does not support golang 1.24.4 required for asdf 
+# when ready to enable see
+# https://catalog.redhat.com/software/containers/ubi8/go-toolset/5ce8713aac3db925c03774d1?gs&q=go%20tool 
+# ARG redhat_image="redhat/ubi8:latest"
+# FROM $redhat_image
+#
+# RUN yum update -y && \
+#     yum install -y git curl bash unzip && \
+#     yum clean all
+#
+# RUN useradd --shell /bin/bash --home /asdf --create-home asdf
+# ENV PATH="${PATH}:/asdf/.asdf/shims:/asdf/.asdf/bin"
+#
+# USER asdf
+# WORKDIR /asdf
+#
+# COPY ../bin/install-asdf-package /init/
+# COPY ../bin/manage-toolset-versions /usr/local/bin/
+#
+# ONBUILD ARG asdf_version="master"
+# ONBUILD ARG packages=""
+# ONBUILD ENV ASDF_PACKAGES=$packages
+#
+# ONBUILD USER asdf
+# ONBUILD RUN git clone --branch $asdf_version --depth 1 https://github.com/asdf-vm/asdf.git $HOME/.asdf && \
+#     echo '. $HOME/.asdf/asdf.sh' >> $HOME/.bashrc && \
+#     bash /init/install-asdf-package

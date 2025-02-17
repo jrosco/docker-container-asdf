@@ -1,64 +1,96 @@
 # https://docs.docker.com/compose/compose-file/build/
 services:
   alpine:
-    image: ${ASDF_REGISTRY_TOOLSET}/awscli:alpine
+    image: ${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        image: "${ALPINE_IMAGE_REPO_PATH}:latest"
+        asdf_image: "${ALPINE_IMAGE_REPO_PATH}"
         packages: ${AWSCLI_PACKAGES}
-        asdf_version: ${ASDF_VERSION}
       platforms:
         - "linux/amd64"
       tags:
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:alpine-${GIT_TAG}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_VERSION}-alpine-${ALPINE_VERSION}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_MAJOR_VERSION}-alpine-${ALPINE_MAJOR_VERSION}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_MAJOR_VERSION}.${ASDF_MINOR_VERSION}-alpine-${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_VERSION_SHORTHAND}-${ALPINE_VERSION_SHORTHAND}
+        # main
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:latest" # set alpine as default latest images
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:${ASDF_VERSION}" # set alpine as default asdf image
+        # alpine x.x.x
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine-${ALPINE_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine-${ALPINE_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine-${ALPINE_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine-${ALPINE_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        # alpine x.x
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine-${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine-${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine-${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine-${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        # alpine major
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine${ALPINE_MAJOR_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine${ALPINE_MAJOR_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine${ALPINE_MAJOR_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:alpine${ALPINE_MAJOR_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
 
       labels:
         - "asdf-version=${ASDF_VERSION}"
 
-  ubuntu:
-    image: ${ASDF_REGISTRY_TOOLSET}/awscli:ubuntu
+  debian:
+    image: ${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        image: "${UBUNTU_IMAGE_REPO_PATH}:latest"
+        asdf_image: "${DEBIAN_IMAGE_REPO_PATH}"
         packages: ${AWSCLI_PACKAGES}
-        asdf_version: ${ASDF_VERSION}
       platforms:
         - "linux/amd64"
       tags:
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:ubuntu-${GIT_TAG}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_VERSION}-ubuntu-${UBUNTU_VERSION}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_MAJOR_VERSION}-ubuntu-${UBUNTU_MAJOR_VERSION}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_MAJOR_VERSION}.${ASDF_MINOR_VERSION}-ubuntu-${UBUNTU_MAJOR_VERSION}.${UBUNTU_MINOR_VERSION}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_VERSION_SHORTHAND}-${UBUNTU_VERSION_SHORTHAND}
+        # main
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        # debian x.x
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${DEBIAN_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${DEBIAN_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${DEBIAN_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${DEBIAN_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        # debian major
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian${DEBIAN_MAJOR_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian${DEBIAN_MAJOR_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian${DEBIAN_MAJOR_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian${DEBIAN_MAJOR_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian${DEBIAN_MAJOR_VERSION}-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian${DEBIAN_MAJOR_VERSION}-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        # debian codename
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${DEBIAN_VERSION_CODENAME}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${DEBIAN_VERSION_CODENAME}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${DEBIAN_VERSION_CODENAME}-${DEBIAN_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${DEBIAN_VERSION_CODENAME}-${DEBIAN_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/awscli-toolset:debian-${DEBIAN_VERSION_CODENAME}-${DEBIAN_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
 
       labels:
         - "asdf-version=${ASDF_VERSION}"
-  
-  redhat:
-    image: ${ASDF_REGISTRY_TOOLSET}/awscli:redhat
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        image: "${REDHAT_IMAGE_REPO_PATH}:latest"
-        packages: ${AWSCLI_PACKAGES}
-        asdf_version: ${ASDF_VERSION}
-      platforms:
-        - "linux/amd64"
-      tags:
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:redhat-${GIT_TAG}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_VERSION}-redhat-${REDHAT_VERSION}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_MAJOR_VERSION}-redhat-${REDHAT_MAJOR_VERSION}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_MAJOR_VERSION}.${ASDF_MINOR_VERSION}-redhat-${REDHAT_MAJOR_VERSION}.${REDHAT_MINOR_VERSION}
-        - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_VERSION_SHORTHAND}-${REDHAT_VERSION_SHORTHAND}
 
-      labels:
-        - "asdf-version=${ASDF_VERSION}"
+  # disabled redhat as it does not support golang 1.24.4 required for asdf
+  # when ready to enable see
+  # https://catalog.redhat.com/software/containers/ubi8/go-toolset/5ce8713aac3db925c03774d1?gs&q=go%20tool 
+  # redhat:
+  #   image: ${ASDF_REGISTRY_TOOLSET}/awscli:redhat
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       image: "${REDHAT_IMAGE_REPO_PATH}:latest"
+  #       packages: ${AWSCLI_PACKAGES}
+  #       asdf_version: ${ASDF_VERSION}
+  #     platforms:
+  #       - "linux/amd64"
+  #     tags:
+  #       - ${ASDF_REGISTRY_TOOLSET}/awscli:redhat-${GIT_TAG}
+  #       - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_VERSION}-redhat-${REDHAT_VERSION}
+  #       - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_MAJOR_VERSION}-redhat-${REDHAT_MAJOR_VERSION}
+  #       - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_MAJOR_VERSION}.${ASDF_MINOR_VERSION}-redhat-${REDHAT_MAJOR_VERSION}.${REDHAT_MINOR_VERSION}
+  #       - ${ASDF_REGISTRY_TOOLSET}/awscli:${ASDF_VERSION_SHORTHAND}-${REDHAT_VERSION_SHORTHAND}
+  #
+  #     labels:
+  #       - "asdf-version=${ASDF_VERSION}"

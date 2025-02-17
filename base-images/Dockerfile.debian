@@ -1,6 +1,6 @@
 # Define base images as build arguments (allow customization in CI/CD pipelines)
-ARG go_build_version="golang:alpine"
-ARG alpine_image="alpine:latest"
+ARG go_build_version="golang:bookworm"
+ARG debian_image="debian:bookworm-slim"
 
 # ---- Build Stage ----
 FROM $go_build_version AS builder
@@ -15,12 +15,17 @@ ARG asdf_version=""
 RUN go install github.com/asdf-vm/asdf/cmd/asdf@$asdf_version
 
 # ---- Final Stage (Minimal Runtime Image) ----
-FROM $alpine_image
+FROM $debian_image
 
 # Update package list and install required runtime dependencies
-RUN apk update \
-    && apk add --no-cache \
-    bash curl git
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    git curl bash unzip ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Refresh the CA certificates
+RUN update-ca-certificates
 
 # Create a non-root user to improve security
 RUN adduser --shell /bin/bash --home /asdf --disabled-password asdf
@@ -33,8 +38,8 @@ USER asdf
 WORKDIR /asdf
 
 # Copy helper scripts for ASDF package management
-COPY bin/install-asdf-package /init/
-COPY bin/manage-toolset-versions /usr/local/bin/
+COPY ../bin/install-asdf-package /init/
+COPY ../bin/manage-toolset-versions /usr/local/bin/
 
 # Copy the ASDF binary from the builder stage
 COPY --from=builder /go/bin/asdf /usr/local/bin/asdf

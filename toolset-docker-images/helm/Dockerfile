@@ -1,3 +1,3 @@
 # build with: --build-arg packages="helm helm:version helm:version:set"
-ARG image="ghcr.io/jrosco/asdf:alpine"
-FROM $image
+ARG asdf_image="ghcr.io/jrosco/asdf-vm:alpine"
+FROM $asdf_image
