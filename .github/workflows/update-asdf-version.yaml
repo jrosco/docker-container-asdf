@@ -61,5 +61,5 @@ jobs:
           labels: |
             dependencies
             automated
-          delete-branch: true
+          delete-branch: false
           draft: true # allows PR to run other workflows when "Ready for review"
