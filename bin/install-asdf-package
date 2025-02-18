@@ -52,10 +52,21 @@ install_package() {
         fi
 
         if [ "$default_package" == "set" ]; then
-            "$asdf_cli" set "$package_name" "$package_version"
+            "$asdf_cli" set "$package_name" "$package_version" || echo "setting $package_name:$package_version failed"
         fi
     fi
 }
+
+# If ASDF_DEFAULT_TOOL_VERSIONS_FILENAME is found Loop over and install packages
+tool_versions=$(asdf info | grep ASDF_DEFAULT_TOOL_VERSIONS_FILENAME | cut -d= -f2)
+if [ -f "$tool_versions" ]; then
+    while read -r line; do
+        package_name=$(echo "$line" | awk '{print $1}')
+        package_version=$(echo "$line" | awk '{print $2}')
+        default_package=""
+        install_package "$package_name" "$package_version" "$default_package"
+    done <"$tool_versions"
+fi
 
 # Loop through each plugin in the PACKAGES array
 for package in "${PACKAGES[@]}"; do
@@ -66,6 +77,5 @@ for package in "${PACKAGES[@]}"; do
         package_version=""
         default_package=""
     fi
-
     install_package "$package_name" "$package_version" "$default_package"
 done
