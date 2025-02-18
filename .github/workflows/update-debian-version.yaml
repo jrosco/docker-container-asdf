@@ -1,4 +1,4 @@
-name: Check ASDF Version Updates [bot_task]
+name: Check Debian Version Updates [bot_task]
 
 on:
   pull_request:
@@ -28,24 +28,24 @@ jobs:
         run: pip install requests
 
       - name: Run update script
-        run: python .github/scripts/update_asdf_version.py
- 
+        run: python .github/scripts/update_dep_version.py debian
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
-          branch: feature/dependencies-version-check/update-asdf-to-latest
+          branch: feature/dependencies-version-check/update-debian-to-latest
           base: main
-          commit-message: "chore(deps): :arrow_up: update ASDF to latest version" 
-          title: ":arrow_up: [asdf] Automated dependency update"
+          commit-message: "chore(deps): :arrow_up: update Debian to latest version"
+          title: ":arrow_up: [debian] Automated dependency update"
           body: |
-            This is an automated update PR created by our dependency update bot. It scans for new releases of ASDF and updates the version accordingly.
+            This is an automated update PR created by our dependency update bot. It scans for new releases of Debian and updates the version accordingly.
 
             🔄 Changes in this PR:
-              * Updated `ASDF_VERSION` to the latest release.
-              * Adjusted `ASDF_MAJOR_VERSION`, `ASDF_MINOR_VERSION`, and `ASDF_PATCH_VERSION` based on the new version.
+              * Updated `DEBIAN_VERSION` to the latest release.
+              * Adjusted `DEBIAN_MAJOR_VERSION`, and `DEBIAN_MINOR_VERSION` based on the new version.
 
             🛠 How this works:
-              * The bot runs on a scheduled workflow to check for new ASDF releases.
+              * The bot runs on a scheduled workflow to check for new Debian releases.
               * If a new version is found, it updates the configuration file and creates this PR.
               * This ensures we always stay up to date with the latest improvements and security patches.
 
@@ -53,7 +53,7 @@ jobs:
               * Review the changes.
               * Merge if everything looks good! ✅
 
-            Releases details: [asdf releases](https://github.com/asdf-vm/asdf/releases)
+            Releases details: [debian releases](https://www.debian.org/releases/)
 
             - [ ] Open this PR for review to trigger other workflows [see limitations](https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs)
 

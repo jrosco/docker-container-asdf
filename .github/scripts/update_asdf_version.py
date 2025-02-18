@@ -9,11 +9,11 @@ env_file = "config/environment"
 env_lines = []
 
 with open(env_file, "r") as f:
-    env_lines = f.readlines()  # Keep all lines, including comments and formatting
+    # Keep all lines, including comments and formatting
+    env_lines = f.readlines()
+
 
 # Fetch the latest ASDF version
-
-
 def get_latest_asdf_version():
     try:
         response = requests.get(ASDF_URL, timeout=10)
