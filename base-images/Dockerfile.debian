@@ -51,6 +51,9 @@ COPY --from=builder /go/bin/asdf /usr/local/bin/asdf
 ONBUILD ARG packages=""
 ONBUILD ENV ASDF_PACKAGES=$packages
 
+# Copy .tool-versions if it exist on build
+ONBUILD COPY --chown=asdf:asdf *.tool-versions /asdf/
+
 # Ensure ASDF packages are installed when the derived image is built
 ONBUILD USER asdf
 ONBUILD RUN bash /init/install-asdf-package

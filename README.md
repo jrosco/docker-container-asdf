@@ -95,6 +95,27 @@ Each Dockerfile utilizes the following build arguments:
 
 The `asdf_image`  and `packages` arguments are optional. If not provided, the build will default to installing the latest version of asdf and no plugins.
 
+### Adding Your Own `.tool-versions` File on Build
+
+You can add your own `.tool-versions` file, for example:
+
+```text
+package_name1 version_number
+package_name2 version_number
+```
+
+Naming the file `.tool-versions` will automatically detect the file and `COPY` it to the image on build.
+
+To add a custom file (e.g., using a different name), you need to use the Docker `COPY` command and set ASDF's environment variable correctly:
+
+```dockerfile
+WORKDIR /tmp/  # Only required if you want to put the file in a different location from the default `/asdf/`
+ENV ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=custom-tool-version
+COPY custom-tool-version ./
+RUN bash /init/install-asdf-package
+```
+See the [asdf reference for more details](https://asdf-vm.com/manage/configuration.html#tool-versions).
+
 ## Getting Started
 
 To get started, follow these steps:
