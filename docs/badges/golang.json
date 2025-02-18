@@ -1,7 +1,7 @@
 {
     "schemaVersion": 1,
     "label": "Go",
-    "message": "1.23.6",
+    "message": "$GOLANG_MAJOR_VERSION.$GOLANG_MINOR_VERSION.$GOLANG_PATCH_VERSION",
     "color": "blue",
     "style": "for-the-badge"
 }
