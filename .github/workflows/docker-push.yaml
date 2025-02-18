@@ -48,16 +48,18 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker build images and tags
         run: |
-          BUILD_NUMBER=${{ needs.tag-semver-release.outputs.tag }}
-          docker compose build
+          BUILD_NUMBER=${{ needs.tag-semver-release.outputs.tag }} \
+          docker \
+            compose build
       - name: Docker lists builds
         run: docker images
       - name: Docker push-image
         run: |
           retry() {
             for i in {1..5}; do
-              BUILD_NUMBER=${{ needs.tag-semver-release.outputs.tag }}
-              docker compose push && break || sleep 15
+              BUILD_NUMBER=${{ needs.tag-semver-release.outputs.tag }} \
+              docker \
+                compose push && break || sleep 10
             done
           }
           retry

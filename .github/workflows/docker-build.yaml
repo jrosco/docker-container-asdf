@@ -80,7 +80,8 @@ jobs:
             for i in {2..5}; do
               ASDF_REGISTRY_SUFFIX="-dev" \
               BUILD_NUMBER=${{ github.event.pull_request.number }} \
-              docker compose push && break || sleep 16
+              docker \
+                compose push && break || sleep 10
             done
           }
           retry
