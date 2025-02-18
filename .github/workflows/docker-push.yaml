@@ -16,7 +16,7 @@ jobs:
     permissions:
       contents: write
     outputs:
-      new_tag: ${{ steps.semver.outputs.new_tag }} # Capture the output
+      tag: ${{ steps.semver.outputs.tag }} # Capture the output
     steps:
       - uses: actions/checkout@v4
         with:
@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker build images and tags
         run: |
-          BUILD_NUMBER=${{ needs.tag-semver-release.outputs.new_tag }}
+          BUILD_NUMBER=${{ needs.tag-semver-release.outputs.tag }}
           docker compose build
       - name: Docker lists builds
         run: docker images
@@ -56,7 +56,7 @@ jobs:
         run: |
           retry() {
             for i in {1..5}; do
-              BUILD_NUMBER=${{ needs.tag-semver-release.outputs.new_tag }}
+              BUILD_NUMBER=${{ needs.tag-semver-release.outputs.tag }}
               docker compose push && break || sleep 15
             done
           }
