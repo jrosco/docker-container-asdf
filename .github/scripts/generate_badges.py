@@ -13,7 +13,8 @@ with open(env_file, "r") as f:
             versions[key] = value.strip('"')
 
 # Construct version strings
-golang_version = versions.get("GOLANG_VERSION", "unknown")
+golang_version = f'{versions.get("GOLANG_MAJOR_VERSION", "0")}.{versions.get(
+    "GOLANG_MINOR_VERSION", "0")}.{versions.get("GOLANG_PATCH_VERSION", "0")}'
 alpine_version = f'{versions.get("ALPINE_MAJOR_VERSION", "0")}.{versions.get(
     "ALPINE_MINOR_VERSION", "0")}.{versions.get("ALPINE_PATCH_VERSION", "0")}'
 debian_version = f'{versions.get("DEBIAN_MAJOR_VERSION", "0")}.{
