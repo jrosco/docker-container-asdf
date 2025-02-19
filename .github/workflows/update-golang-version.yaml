@@ -1,8 +1,6 @@
 name: Check Golang Version Updates [bot_task]
 
 on:
-  pull_request:
-    types: [ready_for_review]
   schedule:
     - cron: "0 0 * * *" # Runs daily at midnight UTC
   workflow_dispatch:  # Allows manual trigger
@@ -35,7 +33,7 @@ jobs:
         with:
           branch: feature/dependencies-version-check/update-golang-to-latest
           base: main
-          commit-message: "chore(deps): :arrow_up: update golang to latest version"
+          commit-message: "chore(deps): :arrow_up: update golang to latest version #none"
           title: ":arrow_up: [golang] Automated dependency update"
           body: |
             This is an automated update PR created by our dependency update bot. It scans for new releases of golang and updates the version accordingly.
