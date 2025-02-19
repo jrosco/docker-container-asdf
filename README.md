@@ -6,6 +6,10 @@
 ![Debian](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/main/docs/badges/debian.json)
 ![ASDF](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/main/docs/badges/asdf.json)
 
+### Docker Latest Builds
+![Docker Image Version (tag)](https://img.shields.io/docker/v/asdfvm/asdf/debian?sort=date&style=for-the-badge&label=Docker&color=red)
+![Docker Image Version (tag)](https://img.shields.io/docker/v/asdfvm/asdf/alpine?sort=date&style=for-the-badge&label=Docker)
+
 # `asdf-vm` base images
 
 Works with [asdf] `>=0.16.0`
