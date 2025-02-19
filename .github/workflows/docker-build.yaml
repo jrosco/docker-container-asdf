@@ -49,13 +49,7 @@ jobs:
           WITH_V: false
           PRERELEASE: false
           DRY_RUN: true
-          DEFAULT_BUMP: minor
-      - name: Check tag can be set
-        if: ${{ steps.check-semver.outputs.tag == '' }}
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed('tag ${{ steps.check-semver.output.new_tag }} cannot be set! please add #major #minor or #patch to the commit message')
+          DEFAULT_BUMP: none
   build-and-push-to-dev:
     runs-on: ubuntu-latest
     needs: [test-alpine-dev, test-debian-dev, check-next-version-bump]

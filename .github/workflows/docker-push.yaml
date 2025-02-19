@@ -33,7 +33,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: false
           PRERELEASE: false
-          DEFAULT_BUMP: minor
+          DEFAULT_BUMP: none
 
   build-and-push:
     runs-on: ubuntu-latest
