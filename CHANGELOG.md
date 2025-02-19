@@ -5,9 +5,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.4] - 2025-02-19
+### Changed
+- 📌 Update asdf to version `0.16.2` [#26](https://github.com/jrosco/docker-container-asdf/pull/26)
+
 ## [0.1.3] - 2025-02-19
 ### Added
-- 🍻 Allow users to add a .tool-versions file for installs (#17)
+- 🍻 Allow users to add a .tool-versions file for installs [#17](https://github.com/jrosco/docker-container-asdf/pull/17)
 
 ## [0.1.2] - 2025-02-18
 ### Changed
@@ -55,3 +59,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.1.1]: https://github.com/jrosco/docker-container-asdf/compare/0.1.0...0.1.1
 [0.1.2]: https://github.com/jrosco/docker-container-asdf/compare/0.1.1...0.1.2
 [0.1.3]: https://github.com/jrosco/docker-container-asdf/compare/0.1.2...0.1.3
+[0.1.4]: https://github.com/jrosco/docker-container-asdf/compare/0.1.3...0.1.4
