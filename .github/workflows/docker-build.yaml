@@ -9,6 +9,7 @@ on:
       - 'docs/**'
       - '.gitignore'
       - '.github/**'
+      - 'COPYING'
 jobs:
   test-alpine-dev:
     runs-on: ubuntu-latest

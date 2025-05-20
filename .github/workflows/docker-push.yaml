@@ -8,6 +8,7 @@ on:
       - 'docs/**'
       - '.gitignore'
       - '.github/**'
+      - 'COPYING'
 
 jobs:
   tag-semver-release:
