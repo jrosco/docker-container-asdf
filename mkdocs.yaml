@@ -1,0 +1,19 @@
+site_name: Docker Container ASDF
+repo_url: https://github.com/jrosco/docker-container-asdf
+repo_name: docker-container-asdf
+docs_dir: docs/
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
