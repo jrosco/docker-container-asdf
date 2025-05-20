@@ -136,7 +136,7 @@ Contributions to enhance or expand the existing base images or examples are welc
 
 ## License
 
-GNU General Public License v3.0 or later
+MIT License
 
 See [COPYING](COPYING) to see the full text.
 
