@@ -20,7 +20,7 @@ FROM $debian_image
 # Update package list and install required runtime dependencies
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    git curl bash unzip ca-certificates && \
+    adduser git curl bash unzip ca-certificates && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
