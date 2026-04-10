@@ -136,9 +136,9 @@ Contributions to enhance or expand the existing base images or examples are welc
 
 ## License
 
-GNU General Public License v3.0 or later
+MIT License
 
-See [COPYING](COPYING) to see the full text.
+See [LICENSE](../COPYING) to see the full text.
 
 [asdf]: https://asdf-vm.com/
 [base-images]: https://github.com/jrosco/docker-container-asdf/tree/main/base-images
