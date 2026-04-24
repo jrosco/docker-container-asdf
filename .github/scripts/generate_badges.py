@@ -13,14 +13,11 @@ with open(env_file, "r") as f:
             versions[key] = value.strip('"')
 
 # Construct version strings
-golang_version = f'{versions.get("GOLANG_MAJOR_VERSION", "0")}.{versions.get(
-    "GOLANG_MINOR_VERSION", "0")}.{versions.get("GOLANG_PATCH_VERSION", "0")}'
-alpine_version = f'{versions.get("ALPINE_MAJOR_VERSION", "0")}.{versions.get(
-    "ALPINE_MINOR_VERSION", "0")}.{versions.get("ALPINE_PATCH_VERSION", "0")}'
-debian_version = f'{versions.get("DEBIAN_MAJOR_VERSION", "0")}.{
-    versions.get("DEBIAN_MINOR_VERSION", "0")}'
-asdf_version = f'{versions.get("ASDF_MAJOR_VERSION", "0")}.{versions.get(
-    "ASDF_MINOR_VERSION", "0")}.{versions.get("ASDF_PATCH_VERSION", "0")}'
+golang_version = f'{versions.get("GOLANG_MAJOR_VERSION", "0")}.{versions.get("GOLANG_MINOR_VERSION", "0")}.{versions.get("GOLANG_PATCH_VERSION", "0")}'
+alpine_version = f'{versions.get("ALPINE_MAJOR_VERSION", "0")}.{versions.get("ALPINE_MINOR_VERSION", "0")}.{versions.get("ALPINE_PATCH_VERSION", "0")}'
+debian_version = f'{versions.get("DEBIAN_MAJOR_VERSION", "0")}.{versions.get("DEBIAN_MINOR_VERSION", "0")}'
+redhat_hi_version = f'{versions.get("REDHAT_VERSION_SHORTHAND", "0")}-{versions.get("GOLANG_MAJOR_VERSION", "0")}.{versions.get("GOLANG_MINOR_VERSION", "0")}.{versions.get("GOLANG_PATCH_VERSION", "0")}'
+asdf_version = f'{versions.get("ASDF_MAJOR_VERSION", "0")}.{versions.get("ASDF_MINOR_VERSION", "0")}.{versions.get("ASDF_PATCH_VERSION", "0")}'
 
 # Define badge properties (color only)
 badges = {
@@ -43,6 +40,13 @@ badges = {
         "message": debian_version,
         "color": "A81D33",
         "logo": "debian",
+        "style": "for-the-badge"
+    },
+    "redhat-hi": {
+        "label": "RedHat Hardened Image",
+        "message": redhat_hi_version,
+        "color": "EE0000",
+        "logo": "redhat",
         "style": "for-the-badge"
     },
     "asdf": {

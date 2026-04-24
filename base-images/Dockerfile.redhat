@@ -1,27 +1,54 @@
-# disabled redhat as it does not support golang 1.24.4 required for asdf 
-# when ready to enable see
-# https://catalog.redhat.com/software/containers/ubi8/go-toolset/5ce8713aac3db925c03774d1?gs&q=go%20tool 
-# ARG redhat_image="redhat/ubi8:latest"
-# FROM $redhat_image
-#
-# RUN yum update -y && \
-#     yum install -y git curl bash unzip && \
-#     yum clean all
-#
-# RUN useradd --shell /bin/bash --home /asdf --create-home asdf
-# ENV PATH="${PATH}:/asdf/.asdf/shims:/asdf/.asdf/bin"
-#
-# USER asdf
-# WORKDIR /asdf
-#
-# COPY ../bin/install-asdf-package /init/
-# COPY ../bin/manage-toolset-versions /usr/local/bin/
-#
-# ONBUILD ARG asdf_version="master"
-# ONBUILD ARG packages=""
-# ONBUILD ENV ASDF_PACKAGES=$packages
-#
-# ONBUILD USER asdf
-# ONBUILD RUN git clone --branch $asdf_version --depth 1 https://github.com/asdf-vm/asdf.git $HOME/.asdf && \
-#     echo '. $HOME/.asdf/asdf.sh' >> $HOME/.bashrc && \
-#     bash /init/install-asdf-package
+ARG redhat_build_tools="registry.access.redhat.com/ubi9/go-toolset"
+ARG go_build_version="registry.access.redhat.com/hi/go"
+ARG redhat_image="registry.access.redhat.com/hi/go"
+
+# ---- Build Stage Copy Bins ---
+# Used to copy necessary build tools from the RedHat build tools image to the
+# final image, as the RedHat base image does not include them by default
+FROM $redhat_build_tools AS bin
+
+# ---- Build Stage ----
+FROM $go_build_version AS builder
+
+# Set working directory inside the container
+WORKDIR /go
+
+# Define ASDF version (must be set when building a derived image)
+ARG asdf_version=""
+
+# Build ASDF Go binary (ASDF is a Go-based CLI tool)
+RUN go install github.com/asdf-vm/asdf/cmd/asdf@$asdf_version
+
+# ---- Final Stage (Minimal Runtime Image) ----
+FROM $redhat_image
+
+# Copy helper scripts for ASDF package management
+COPY ../bin/install-asdf-package /init/
+COPY ../bin/manage-toolset-versions /usr/local/bin/
+
+COPY --from=bin /usr/bin/curl /usr/bin/
+COPY --from=bin /usr/bin/unzip /usr/bin/
+COPY --from=bin /usr/bin/tar /usr/bin/
+COPY --from=bin /usr/bin/gzip /usr/bin/
+COPY --from=bin /usr/lib64/libsigsegv* /usr/lib64/
+COPY --from=bin /usr/lib64/libreadline* /usr/lib64/
+COPY --from=bin /usr/bin/awk /usr/bin/
+
+# Copy the ASDF binary from the builder stage
+COPY --from=builder /go/bin/asdf /usr/local/bin/asdf
+
+# ---- ONBUILD Instructions ----
+# These will be executed only when another Dockerfile extends this base image
+
+# Accept a list of ASDF packages to install in derived images
+ONBUILD ARG asdf_version="master"
+ONBUILD ARG packages=""
+ONBUILD ENV ASDF_PACKAGES=$packages
+
+# Add ASDF to PATH for derived images, ensuring installed packages are accessible
+ENV PATH="/root/.asdf/shims:/root/.asdf/bin:${PATH}"
+
+# Copy .tool-versions if it exist on build
+ONBUILD COPY *.tool-versions /root/
+
+ONBUILD RUN bash /init/install-asdf-package

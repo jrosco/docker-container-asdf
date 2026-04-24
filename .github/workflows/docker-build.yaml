@@ -31,6 +31,16 @@ jobs:
             --build \
             --env ASDF_PACKAGES="helm:latest helmfile:latest" \
             debian bash /init/install-asdf-package
+  test-redhat-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: RedHat install packages
+        run: |
+          docker compose run \
+            --build \
+            --env ASDF_PACKAGES="helm:latest helmfile:latest" \
+            redhat bash /init/install-asdf-package
   check-next-version-bump:
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +63,7 @@ jobs:
           DEFAULT_BUMP: none
   build-and-push-to-dev:
     runs-on: ubuntu-latest
-    needs: [test-alpine-dev, test-debian-dev, check-next-version-bump]
+    needs: [test-alpine-dev, test-debian-dev, test-redhat-dev, check-next-version-bump]
     steps:
       - uses: actions/checkout@v4
       - name: Log in to the Container registry
