@@ -4,6 +4,7 @@
 ![Go](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/main/docs/badges/golang.json)
 ![Alpine](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/main/docs/badges/alpine.json)
 ![Debian](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/main/docs/badges/debian.json)
+![RedHat Hardened Image](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/main/docs/badges/redhat-hi.json)
 ![ASDF](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/main/docs/badges/asdf.json)
 
 ### Docker Latest Builds
@@ -98,6 +99,33 @@ Each Dockerfile utilizes the following build arguments:
 | `helm:latest`     | Install plugin (if not present) and download latest version of `helm`                                                         |
 
 The `asdf_image`  and `packages` arguments are optional. If not provided, the build will default to installing the latest version of asdf and no plugins.
+
+### Docker Image Tagging Strategy
+
+When building toolset images, use a consistent tagging strategy for easy identification and version management. The `docker-compose.yaml` files in the [toolset-docker-images] directory demonstrate a multi-tag approach using variables from `.env`:
+
+```yaml
+tags:
+  - "${ASDF_REGISTRY_TOOLSET}/toolset:latest"                                      # Generic latest
+  - "${ASDF_REGISTRY_TOOLSET}/toolset:alpine-${ALPINE_VERSION}-${ASDF_VERSION}"   # OS + ASDF version
+  - "${ASDF_REGISTRY_TOOLSET}/toolset:alpine-${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}" # OS major.minor
+  - "${ASDF_REGISTRY_TOOLSET}/toolset:alpine-${ALPINE_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}" # Full with build #
+```
+
+**Tag components:**
+
+- `alpine` / `debian` — Base operating system
+- `ALPINE_VERSION` / `DEBIAN_VERSION` — Full OS version (e.g., `3.20.0`, `12.7`)
+- `ASDF_VERSION` — asdf version (e.g., `v0.13.0`)
+- `BUILD_NUMBER` — Build iteration counter
+
+**Tagging recommendations:**
+
+- Use semantic versioning (`v1.0.0`) for toolset releases
+- Include the base OS name and version for clarity
+- Add asdf and build metadata for full traceability
+- Set one tag as `latest` to point to the most recent stable release
+- Use build numbers to distinguish rebuilds of the same version combination
 
 ### Adding Your Own `.tool-versions` File on Build
 
