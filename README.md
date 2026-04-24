@@ -8,8 +8,9 @@
 ![ASDF](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jrosco/docker-container-asdf/refs/heads/main/docs/badges/asdf.json)
 
 ### Docker Latest Builds
-![Docker Image Version (tag)](https://img.shields.io/docker/v/asdfvm/asdf/debian?sort=date&style=for-the-badge&label=Docker&color=red)
-![Docker Image Version (tag)](https://img.shields.io/docker/v/asdfvm/asdf/alpine?sort=date&style=for-the-badge&label=Docker)
+![Docker Image Version (tag)](https://img.shields.io/docker/v/asdfvm/asdf/debian?sort=date&style=for-the-badge&label=Docker&color=A81D33)
+![Docker Image Version (tag)](https://img.shields.io/docker/v/asdfvm/asdf/alpine?sort=date&style=for-the-badge&label=Docker&color=0095D5)
+![Docker Image Version (tag)](https://img.shields.io/docker/v/asdfvm/asdf/redhat-hi-go?sort=date&style=for-the-badge&label=Docker&color=EE0000)
 
 # `asdf-vm` base images
 
