@@ -2,6 +2,13 @@ site_name: Docker Container ASDF
 repo_url: https://github.com/jrosco/docker-container-asdf
 repo_name: docker-container-asdf
 docs_dir: docs/
+nav:
+  - Home: index.md
+  - Toolsets:
+    - Overview: toolsets/README.md
+    - Helm: toolsets/helm/README.md
+    - AWS CLI: toolsets/awscli/README.md
+    - Terraform: toolsets/terraform/README.md
 theme:
   name: material
   palette:
