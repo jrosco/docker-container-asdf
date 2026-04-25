@@ -143,7 +143,7 @@ To add a custom file (e.g., using a different name), you need to use the Docker 
 
 ```dockerfile
 WORKDIR /tmp/  # Only required if you want to put the file in a different location from the default `/asdf/`
-ENV ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=custom-tool-version
+ENV ASDF_TOOL_VERSIONS_FILENAME=custom-tool-version
 COPY custom-tool-version ./
 RUN bash /init/install-asdf-package
 ```
