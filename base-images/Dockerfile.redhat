@@ -49,6 +49,6 @@ ONBUILD ENV ASDF_PACKAGES=$packages
 ENV PATH="/root/.asdf/shims:/root/.asdf/bin:${PATH}"
 
 # Copy .tool-versions if it exist on build
-ONBUILD COPY *.tool-versions /root/
+ONBUILD COPY *.tool-versions ./
 
 ONBUILD RUN bash /init/install-asdf-package
