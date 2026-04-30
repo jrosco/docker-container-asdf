@@ -5,10 +5,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-04-31
+### Changed
+- ✨ Multi Arch Build Support [#64](https://github.com/jrosco/docker-container-asdf/pull/64)
+
 ## [0.1.10] - 2026-04-10
 ### Changed
 - 📌 Update golang to version `1.26.2` [#54](https://github.com/jrosco/docker-container-asdf/pull/54)
-- 
+
 ## [0.1.9] - 2026-03-15
 ### Changed
 - 📌 Update golang to version `1.26.1` [#45](https://github.com/jrosco/docker-container-asdf/pull/48)
@@ -90,3 +94,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.1.8]: https://github.com/jrosco/docker-container-asdf/compare/0.1.7...0.1.8
 [0.1.9]: https://github.com/jrosco/docker-container-asdf/compare/0.1.8...0.1.9
 [0.1.10]: https://github.com/jrosco/docker-container-asdf/compare/0.1.9...0.1.10
+[1.0.0]: https://github.com/jrosco/docker-container-asdf/compare/0.1.10...1.0.0

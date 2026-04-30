@@ -8,11 +8,19 @@ GIT_TAG := $(shell git describe --tags --always --abbrev=0)
 # Export the Git tag as an environment variable
 export GIT_TAG
 
-.PHONY: all build push build-toolsets push-toolsets ln-env-toolsets
+.PHONY: all build push test build-toolsets push-toolsets ln-env-toolsets setup-buildx build-multiplatform push-multiplatform
 
-all: build push
+all: build
 
 toolsets: build-toolsets push-toolsets
+
+test:
+	@echo "Testing Alpine base image..."
+	@docker compose run --build --env ASDF_PACKAGES="helm:latest helmfile:latest" alpine bash /init/install-asdf-package
+	@echo "Testing Debian base image..."
+	@docker compose run --build --env ASDF_PACKAGES="helm:latest helmfile:latest" debian bash /init/install-asdf-package
+	@echo "Testing RedHat base image..."
+	@docker compose run --build --env ASDF_PACKAGES="helm:latest helmfile:latest" redhat bash /init/install-asdf-package
 
 build:
 	@docker compose build
@@ -50,3 +58,19 @@ ln-env-toolsets:
 			echo ".env file already exists in $$target, skipping..."; \
 		fi \
 	done
+
+# Multi-platform build targets
+
+setup-buildx:
+	@echo "Setting up Docker Buildx with multi-platform support..."
+	@docker buildx create --name asdf-builder --platform linux/amd64,linux/arm64,linux/arm/v7 2>/dev/null || true
+	@docker buildx use asdf-builder
+	@echo "Buildx builder 'asdf-builder' is ready"
+
+build-multiplatform: setup-buildx
+	@echo "Building images for multiple platforms..."
+	@export DOCKER_BUILDKIT=1 && docker compose build
+
+push-multiplatform: setup-buildx
+	@echo "Pushing images to registry for multiple platforms..."
+	@export DOCKER_BUILDKIT=1 && docker compose --parallel $(PARALLELISM) build --push
