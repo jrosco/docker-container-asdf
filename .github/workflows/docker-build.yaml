@@ -11,36 +11,12 @@ on:
       - '.github/**'
       - 'COPYING'
 jobs:
-  test-alpine-dev:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Alpine install packages
-        run: |
-          docker compose run \
-            --build \
-            --env ASDF_PACKAGES="helm:latest helmfile:latest" \
-            alpine bash /init/install-asdf-package
-  test-debian-dev:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: Debian install packages
-        run: |
-          docker compose run \
-            --build \
-            --env ASDF_PACKAGES="helm:latest helmfile:latest" \
-            debian bash /init/install-asdf-package
-  test-redhat-dev:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: RedHat install packages
-        run: |
-          docker compose run \
-            --build \
-            --env ASDF_PACKAGES="helm:latest helmfile:latest" \
-            redhat bash /init/install-asdf-package
+      - name: Test base images
+        run: make test
   check-next-version-bump:
     runs-on: ubuntu-latest
     steps:
@@ -63,7 +39,7 @@ jobs:
           DEFAULT_BUMP: none
   build-and-push-to-dev:
     runs-on: ubuntu-latest
-    needs: [test-alpine-dev, test-debian-dev, test-redhat-dev, check-next-version-bump]
+    needs: [test, check-next-version-bump]
     steps:
       - uses: actions/checkout@v6
       - name: Set up QEMU for multi-platform builds

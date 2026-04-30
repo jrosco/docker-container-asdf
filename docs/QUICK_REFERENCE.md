@@ -89,21 +89,3 @@ All build commands use environment variables from `config/environment`:
 source ./config/environment
 echo "Building ASDF ${ASDF_VERSION} on Alpine ${ALPINE_VERSION}"
 ```
-
-## Troubleshooting
-
-**Q: `docker buildx` command not found**
-A: Update Docker Desktop to 20.10+
-
-**Q: Build fails with "no matching manifest"**
-A: Use `--push` flag for multi-platform builds instead of `--load`
-
-**Q: Build is very slow for ARM**
-A: This is normal - QEMU emulation is slower. Use native ARM builds when possible.
-
-**Q: Registry login fails**
-A: Run `docker logout` then `docker login <registry>`
-
-## More Information
-
-See [docs/multi-platform-builds.md](./multi-platform-builds.md) for comprehensive documentation.

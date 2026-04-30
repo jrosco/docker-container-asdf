@@ -8,11 +8,19 @@ GIT_TAG := $(shell git describe --tags --always --abbrev=0)
 # Export the Git tag as an environment variable
 export GIT_TAG
 
-.PHONY: all build push build-toolsets push-toolsets ln-env-toolsets setup-buildx build-multiplatform push-multiplatform
+.PHONY: all build push test build-toolsets push-toolsets ln-env-toolsets setup-buildx build-multiplatform push-multiplatform
 
-all: build push
+all: build
 
 toolsets: build-toolsets push-toolsets
+
+test:
+	@echo "Testing Alpine base image..."
+	@docker compose run --build --env ASDF_PACKAGES="helm:latest helmfile:latest" alpine bash /init/install-asdf-package
+	@echo "Testing Debian base image..."
+	@docker compose run --build --env ASDF_PACKAGES="helm:latest helmfile:latest" debian bash /init/install-asdf-package
+	@echo "Testing RedHat base image..."
+	@docker compose run --build --env ASDF_PACKAGES="helm:latest helmfile:latest" redhat bash /init/install-asdf-package
 
 build:
 	@docker compose build
