@@ -11,7 +11,8 @@ services:
         alpine_image: "alpine:${ALPINE_VERSION}"
       platforms:
         - "linux/amd64"
-        # - "linux/arm64"
+        - "linux/arm64"
+        - "linux/arm/v7"
       tags:
         - "${ASDF_REGISTRY_BASE}:latest" # set alpine as default latest images
         - "${ALPINE_IMAGE_REPO_PATH}-${ASDF_VERSION}" # set as default asdf images
@@ -45,7 +46,8 @@ services:
         debian_image: debian:${DEBIAN_VERSION}
       platforms:
         - "linux/amd64"
-        # - "linux/arm64"
+        - "linux/arm64"
+        - "linux/arm/v7"
       tags:
         - "${DEBIAN_IMAGE_REPO_PATH}-build${BUILD_NUMBER}"
         - "${DEBIAN_IMAGE_REPO_PATH}-${DEBIAN_VERSION_CODENAME}"
@@ -89,6 +91,7 @@ services:
         redhat_build_tools: registry.access.redhat.com/$REDHAT_BUILD_TOOLS/go-toolset
       platforms:
         - "linux/amd64"
+        - "linux/arm64"
       tags:
         - "${REDHAT_IMAGE_REPO_PATH}-${REDHAT_TAG_PREFIX}build${BUILD_NUMBER}"
         - "${REDHAT_IMAGE_REPO_PATH}-${REDHAT_TAG_PREFIX}${REDHAT_VERSION}"
