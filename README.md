@@ -41,6 +41,9 @@ REPOSITORY=$URL
 # docker registries
 ASDF_REGISTRY_BASE="ghcr.io/jrosco/$NAME"
 ASDF_REGISTRY_TOOLSET="$ASDF_REGISTRY_BASE-toolsets"
+
+ASDF_IMAGE_TAG="alpine3-v0.19.0"
+PACKAGE_NAME="helm helmfile helm-diff"
 ```
 
 An example is showcased using Helm packages within an Alpine Linux environment and other examples found in the [toolset-docker-images] directory.
@@ -50,13 +53,13 @@ docker-compose.yml:
 ```yaml
 services:
   alpine:
-        image: ghcr.io/jrosco/asdf-vm-toolsets/helm:alpine
+    image: ${ASDF_REGISTRY_TOOLSET}/helm:build
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        asdf_image: "ghcr.io/jrosco/asdf-vm:alpine"
-        packages: "helm helmfile helm-diff"
+        asdf_image: "${ASDF_REGISTRY_BASE}:${ASDF_IMAGE_TAG}"
+        packages: "${PACKAGE_NAME}"
       platforms:
         - "linux/amd64"
 ```
@@ -64,15 +67,18 @@ services:
 Example `Dockerfile` and build:
 
 ```dockerfile
-FROM ghcr.io/jrosco/asdf-vm:alpine
+ARG asdf_image="ghcr.io/jrosco/asdf-vm:alpine"
+FROM $asdf_image
 ```
 
 #### Build the image
 
 ```bash
-docker build \
+docker build --platform linux/amd64 \
     --build-arg \
     packages="awscli:latest:set helmfile:latest:set helm:latest:set kustomize:latest:set" \
+    --build-arg \
+    asdf_image="ghcr.io/jrosco/asdf-vm:alpine3-v0.19.0" \
     -t helm-toolset:alpine .
 ```
 
