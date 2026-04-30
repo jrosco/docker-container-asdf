@@ -59,10 +59,10 @@ setup-buildx:
 	@docker buildx use asdf-builder
 	@echo "Buildx builder 'asdf-builder' is ready"
 
-build-multiplatform:
+build-multiplatform: setup-buildx
 	@echo "Building images for multiple platforms..."
 	@export DOCKER_BUILDKIT=1 && docker compose build
 
-push-multiplatform:
+push-multiplatform: setup-buildx
 	@echo "Pushing images to registry for multiple platforms..."
 	@export DOCKER_BUILDKIT=1 && docker compose --parallel $(PARALLELISM) build --push
