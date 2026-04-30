@@ -14,7 +14,7 @@ jobs:
   test-alpine-dev:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Alpine install packages
         run: |
           docker compose run \
@@ -24,7 +24,7 @@ jobs:
   test-debian-dev:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Debian install packages
         run: |
           docker compose run \
@@ -34,7 +34,7 @@ jobs:
   test-redhat-dev:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: RedHat install packages
         run: |
           docker compose run \
@@ -44,7 +44,7 @@ jobs:
   check-next-version-bump:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.merge_commit_sha }}
           fetch-depth: '0'
@@ -53,7 +53,7 @@ jobs:
         # Any commit message that includes #major, #minor, #patch, or #none will trigger the respective version bump.
         # If no #major, #minor or #patch tag is contained in the merge commit message, it will bump whichever DEFAULT_BUMP
         # is set to (which is minor by default)
-        uses: anothrNick/github-tag-action@v1
+        uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8 # 1.75.0
         id: check-semver
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -65,9 +65,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test-alpine-dev, test-debian-dev, test-redhat-dev, check-next-version-bump]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Log in to the Container registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
