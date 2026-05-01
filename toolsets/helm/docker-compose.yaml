@@ -1,0 +1,91 @@
+# https://docs.docker.com/compose/compose-file/build/
+services:
+  alpine:
+    image: ${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        asdf_image: "${ALPINE_IMAGE_REPO_PATH}"
+        packages: ${HELM_PACKAGES}
+      platforms:
+        - "linux/amd64"
+      tags:
+        # main
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:latest" # set alpine as default latest images
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:${ASDF_VERSION}" # set alpine as default asdf image
+        # alpine x.x.x
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine-${ALPINE_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine-${ALPINE_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine-${ALPINE_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine-${ALPINE_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        # alpine x.x
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine-${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine-${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine-${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine-${ALPINE_MAJOR_VERSION}.${ALPINE_MINOR_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        # alpine major
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine${ALPINE_MAJOR_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine${ALPINE_MAJOR_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine${ALPINE_MAJOR_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:alpine${ALPINE_MAJOR_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+
+      labels:
+        - "asdf-version=${ASDF_VERSION}"
+
+  debian:
+    image: ${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        asdf_image: "${DEBIAN_IMAGE_REPO_PATH}"
+        packages: ${HELM_PACKAGES}
+      platforms:
+        - "linux/amd64"
+      tags:
+        # main
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        # debian x.x
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${DEBIAN_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${DEBIAN_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${DEBIAN_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${DEBIAN_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        # debian major
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian${DEBIAN_MAJOR_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian${DEBIAN_MAJOR_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian${DEBIAN_MAJOR_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian${DEBIAN_MAJOR_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian${DEBIAN_MAJOR_VERSION}-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian${DEBIAN_MAJOR_VERSION}-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        # debian codename
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${DEBIAN_VERSION_CODENAME}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${DEBIAN_VERSION_CODENAME}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${DEBIAN_VERSION_CODENAME}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${DEBIAN_VERSION_CODENAME}-${DEBIAN_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${DEBIAN_VERSION_CODENAME}-${DEBIAN_VERSION}-${ASDF_VERSION}"
+        - "${ASDF_REGISTRY_TOOLSET}/helm-toolset:debian-${DEBIAN_VERSION_CODENAME}-${DEBIAN_VERSION}-${ASDF_VERSION}-build${BUILD_NUMBER}"
+
+      labels:
+        - "asdf-version=${ASDF_VERSION}"
+
+  redhat:
+    image: ${ASDF_REGISTRY_TOOLSET}/helm-toolset:redhat-hi-go
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        asdf_image: "${REDHAT_IMAGE_REPO_PATH}"
+        packages: ${HELM_PACKAGES}
+      platforms:
+        - "linux/amd64"
+      tags:
+        - ${ASDF_REGISTRY_TOOLSET}/helm-toolset:redhat-hi-go-${GIT_TAG}
+        - ${ASDF_REGISTRY_TOOLSET}/helm-toolset:${ASDF_VERSION}-redhat-hi-go-${REDHAT_VERSION}
+        - ${ASDF_REGISTRY_TOOLSET}/helm-toolset:${ASDF_MAJOR_VERSION}-redhat-hi-go-${REDHAT_MAJOR_VERSION}
+        - ${ASDF_REGISTRY_TOOLSET}/helm-toolset:${ASDF_MAJOR_VERSION}.${ASDF_MINOR_VERSION}-redhat-hi-go-${REDHAT_MAJOR_VERSION}.${REDHAT_MINOR_VERSION}
+        - ${ASDF_REGISTRY_TOOLSET}/helm-toolset:${ASDF_VERSION_SHORTHAND}-redhat-hi-go
+      labels:
+        - "asdf-version=${ASDF_VERSION}"
